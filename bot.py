@@ -10,7 +10,7 @@ def write_msg(user_id, message):
 '''
 
 # API-ключ созданный ранее
-token = "26085dc482433a202c6b046fbd10fecc85e1b656bd2964d74d4c4a3e6dc7a479da4a8bb1499528e4dfe6c"
+token = "645afc1133658c6516df7ad7930afcdeb1556cbc0f87fb8f3021ddb1b53c18c700d5eabcee0da76e4f4f4"
 
 # Авторизуемся как сообщество
 vk_session = vk_api.VkApi(token=token)
@@ -18,6 +18,7 @@ vk_session = vk_api.VkApi(token=token)
 # Работа с сообщениями
 longpoll = VkLongPoll(vk_session)
 vk = vk_session.get_api()
+
 keyboard = VkKeyboard()
 keyboard.add_button('Привет', color=VkKeyboardColor.DEFAULT)
 keyboard.add_button('Погода', color=VkKeyboardColor.POSITIVE)
@@ -36,12 +37,14 @@ for event in longpoll.listen():
         if event.to_me:
             # Сообщение от пользователя
             print('New message:')
-            print(f'For me by: {event.user_id}', end='')
+            print(f'For me by: {event.user_id}')
 
             # Ответы в зависимости от сообщения пользователя
             bot = VkBot(event.user_id)
-            '''
-            write_msg(event.user_id, bot.new_message(event.text))
-            '''
-            vk.messages.send(user_id=event.user_id, message=bot.new_message(event.text), random_id=get_random_id(), keyboard=keyboard.get_keyboard())
+            vk.messages.send(
+                user_id=event.user_id,
+                message=bot.new_message(event.text),
+                random_id=get_random_id(),
+                keyboard=keyboard.get_keyboard()
+            )
             print('Text: ', event.text)
