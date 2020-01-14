@@ -1,4 +1,6 @@
-import bs4, requests
+import bs4
+import requests
+
 
 class VkBot:
 
@@ -17,4 +19,62 @@ class VkBot:
         user_name = self._clean_all_tag_from_str(bs.findAll("title")[0])
         return user_name.split()[0]
 
-    def _clean_all_tag_from_str
+    def _get_time(self):
+        request = requests.get("https://my-calend.ru/date-and-time-today")
+        b = bs4.BeautifulSoup(request.text, "html.parser")
+        return self._clean_all_tag_from_str(str(b.select(".page")[0].findAll("h2")[1])).split()[1]
+
+    def _get_weather(city: str = "москва") -> list:
+        request = requests.get("https://sinoptik.com.ru/погода-москва")
+        b = bs4.BeautifulSoup(request.text, "html.parser")
+
+        p3 = b.select('.temperature .p3')
+        weather1 = p3[0].getText()
+        p4 = b.select('.temperature .p4')
+        weather2 = p4[0].getText()
+        p5 = b.select('.temperature .p5')
+        weather3 = p5[0].getText()
+        p6 = b.select('.temperature .p6')
+        weather4 = p6[0].getText()
+        result = ''
+        result = result + "Утром: " + weather1 + ' ' + weather2 + '\n'
+        result = result + "Днем: " + weather3 + ' ' + weather4 + '\n'
+        temp = b.select('.rSide .description')
+        weather = temp[0].getText()
+        result = weather.strip()
+
+        return result
+
+    @staticmethod
+    def _clean_all_tag_from_str(string_line):
+        result = ""
+        not_skip = True
+        for i in list(string_line):
+            if not_skip:
+                if i == "<":
+                    not_skip = False
+                else:
+                    result += i
+            else:
+                if i == ">":
+                    not_skip = True
+
+        return result
+
+    def new_message(self, message):
+
+        # Привет
+        if message.upper() == self._COMMANDS[0]:
+            return f"Привет-привет, {self._USERNAME}!"
+
+        elif message.upper() == self._COMMANDS[1]:
+            return self._get_weather()
+
+        elif message.upper() == self._COMMANDS[2]:
+            return self._get_time()
+
+        elif message.upper() == self._COMMANDS[3]:
+            return f"Пока-пока, {self._USERNAME}!"
+
+        else:
+            return "Не понимаю о чем вы..."
