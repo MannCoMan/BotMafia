@@ -3,11 +3,8 @@ from vk_bot import VkBot
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.utils import get_random_id
+import sqlite3
 
-'''
-def write_msg(user_id, message):
-    vk.method('message.send', {'user_id': user_id, 'message': message})
-'''
 
 # API-ключ созданный ранее
 token = "645afc1133658c6516df7ad7930afcdeb1556cbc0f87fb8f3021ddb1b53c18c700d5eabcee0da76e4f4f4"
@@ -43,7 +40,7 @@ for event in longpoll.listen():
             bot = VkBot(event.user_id)
             vk.messages.send(
                 user_id=event.user_id,
-                message=bot.new_message(event.text),
+                message=event.user_id,
                 random_id=get_random_id(),
                 keyboard=keyboard.get_keyboard()
             )

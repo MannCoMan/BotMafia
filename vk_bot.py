@@ -25,9 +25,6 @@ class VkBot:
         b = bs4.BeautifulSoup(request.text, "html.parser")
         return self._clean_all_tag_from_str(str(b.select(".page")[0].findAll("h2")[1])).split()[1]
 
-    def _get_weather(self):
-        request = requests.get("")
-
     @staticmethod
     def _clean_all_tag_from_str(string_line):
         result = ""
